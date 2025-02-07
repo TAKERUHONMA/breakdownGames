@@ -1,6 +1,5 @@
 #include "PlayScene.h"
 #include "Trump.h"
-#include "Puzzle.h"
 
 //コンストラクタ
 PlayScene::PlayScene(GameObject * parent)
@@ -12,7 +11,6 @@ PlayScene::PlayScene(GameObject * parent)
 void PlayScene::Initialize()
 {
 	Instantiate<Trump>(this);
-	//Instantiate<Puzzle>(this);
 }
 
 //更新

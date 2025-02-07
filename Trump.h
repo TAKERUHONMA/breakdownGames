@@ -6,6 +6,7 @@ using std::vector;
 
 class Trump : public GameObject
 {
+    int count;                   //クールタイム
     int gHandle;                 // トランプ画像ハンドル
     int counter;                 // タイマー
     int selectedCard1;           // 選択中の1枚目のカード
@@ -26,6 +27,10 @@ class Trump : public GameObject
 public:
     Trump(GameObject* parent);
     ~Trump() {};
+
+    
+    void Initialize() override;  //初期化
     void Update() override;      // ゲームロジックの更新
     void Draw() override;        // カードの描画
+    void TrumpCount(int _count);           //トランプをカウントする
 };

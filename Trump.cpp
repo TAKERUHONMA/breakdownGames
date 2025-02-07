@@ -3,7 +3,7 @@
 #include <algorithm>
 
 Trump::Trump(GameObject* parent)
-    : gHandle(LoadGraph("Assets/trump.png")), selectedCard1(-1), selectedCard2(-1), flipTimer(0)
+    : gHandle(LoadGraph("Assets/trump.png")), selectedCard1(-1), selectedCard2(-1), flipTimer(0),count(0)
 {
     counter = 0;
 
@@ -27,8 +27,14 @@ Trump::Trump(GameObject* parent)
     assert(gHandle >= 0);
 }
 
+void Trump::Initialize()
+{
+
+}
+
 void Trump::Update()
 {
+
     // キーが押されたかどうかを管理するフラグ
     static bool isKeyPressedRight = false;
     static bool isKeyPressedLeft = false;
@@ -41,11 +47,11 @@ void Trump::Update()
         if (!isKeyPressedRight) 
         {
             // キーが押されていなかった場合、カードを1つ進める
-            if (selectedCard1 < (int)cards.size() - 1) 
+            if (selectedCard1 < (int)cards.size()) 
             {
                 selectedCard1++;
             }
-            isKeyPressedRight = true;  // フラグを立てる
+            isKeyPressedRight = true;  // 動きを止める
         }
     }
     else 
@@ -54,27 +60,34 @@ void Trump::Update()
         isKeyPressedRight = false;
     }
 
-    // ↑キーが押されたとき
+    // ←キーが押されたとき
     if (CheckHitKey(KEY_INPUT_LEFT)) 
     {
         if (!isKeyPressedLeft) 
         {
             // キーが押されていなかった場合、カードを1つ戻す
-            if (selectedCard1 > 0) 
+            if (selectedCard1 < (int)cards.size())
             {
                 selectedCard1--;
             }
             isKeyPressedLeft = true;  // フラグを立てる
         }
     }
+    else
+    {
+        // ←キーが離されたらフラグを戻す
+        isKeyPressedLeft = false;
+    }
+
+    // ↑キーが押されたとき
     if (CheckHitKey(KEY_INPUT_UP)) 
     {
         if (!isKeyPressedup) 
         {
             // キーが押されていなかった場合、カードを1つ進める
-            if (selectedCard1 < (int)cards.size() - 1) 
+            if (selectedCard1 < (int)cards.size()) 
             {
-                selectedCard1++;
+                selectedCard1 -= 12;
             }
             isKeyPressedup = true;  // フラグを立てる
         }
@@ -91,9 +104,9 @@ void Trump::Update()
         if (!isKeyPresseddown) 
         {
             // キーが押されていなかった場合、カードを1つ戻す
-            if (selectedCard1 > 0) 
+            if (selectedCard1 < (int)cards.size())
             {
-                selectedCard1--;
+                selectedCard1 += 12;
             }
             isKeyPresseddown = true;  // フラグを立てる
         }
@@ -105,17 +118,17 @@ void Trump::Update()
     }
 
     // 選択されたカードをめくる
-    if (CheckHitKey(KEY_INPUT_RETURN) && selectedCard1 >= 0 && selectedCard1 < (int)cards.size()) 
+    if (CheckHitKey(KEY_INPUT_RETURN) && selectedCard1 >= 0 && selectedCard1 < (int)cards.size())
     {
-        if (!cards[selectedCard1].isFaceUp && !cards[selectedCard1].isMatched) 
+        if (!cards[selectedCard1].isFaceUp && !cards[selectedCard1].isMatched)
         {
             cards[selectedCard1].isFaceUp = true;
 
-            if (selectedCard2 == -1) 
+            if (selectedCard2 == -1)
             {
                 selectedCard2 = selectedCard1;
             }
-            else 
+            else
             {
                 flipTimer = 60; // 一定時間後に裏返す
             }
@@ -174,4 +187,9 @@ void Trump::Draw()
             DrawRectGraph(x, y, cards[i].num * 0, cards[i].mark * 0, 56, 80, gHandle, TRUE);
         }
     }
+}
+
+void Trump::TrumpCount(int _count)
+{
+    _count += 1;
 }

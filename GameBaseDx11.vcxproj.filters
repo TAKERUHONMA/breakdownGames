@@ -17,9 +17,6 @@
     <Filter Include="リソース ファイル\Trump">
       <UniqueIdentifier>{3d686988-51dc-4add-9478-c35b2a7f0241}</UniqueIdentifier>
     </Filter>
-    <Filter Include="リソース ファイル\Puzzle">
-      <UniqueIdentifier>{8c8b450b-0b4f-400d-9105-be0d7b510dda}</UniqueIdentifier>
-    </Filter>
     <Filter Include="リソース ファイル\Scene">
       <UniqueIdentifier>{f3e30020-0450-4e88-873b-ea151cdb8b94}</UniqueIdentifier>
     </Filter>
@@ -46,9 +43,6 @@
     <ClCompile Include="Trump.cpp">
       <Filter>リソース ファイル\Trump</Filter>
     </ClCompile>
-    <ClCompile Include="Puzzle.cpp">
-      <Filter>リソース ファイル\Puzzle</Filter>
-    </ClCompile>
     <ClCompile Include="PlayScene.cpp">
       <Filter>リソース ファイル\Scene</Filter>
     </ClCompile>
@@ -74,9 +68,6 @@
     </ClInclude>
     <ClInclude Include="Trump.h">
       <Filter>リソース ファイル\Trump</Filter>
-    </ClInclude>
-    <ClInclude Include="Puzzle.h">
-      <Filter>リソース ファイル\Puzzle</Filter>
     </ClInclude>
     <ClInclude Include="PlayScene.h">
       <Filter>リソース ファイル\Scene</Filter>
