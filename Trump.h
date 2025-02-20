@@ -12,6 +12,7 @@ class Trump : public GameObject
     int selectedCard1;           // 選択中の1枚目のカード
     int selectedCard2;           // 選択中の2枚目のカード
     int flipTimer;               // 裏返しまでのタイマー
+    int flipCooldown = 0;        // クールタイムのカウントダウン
 
     struct Card
     {

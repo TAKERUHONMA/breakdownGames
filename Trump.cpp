@@ -1,16 +1,23 @@
 #include "Trump.h"
 #include <assert.h>
 #include <algorithm>
+#include <ctime>
+#include <cstdlib>
 
+
+// クラスのコンストラクタなどで乱数のシードを初期化
 Trump::Trump(GameObject* parent)
-    : gHandle(LoadGraph("Assets/trump.png")), selectedCard1(-1), selectedCard2(-1), flipTimer(0),count(0)
+    : gHandle(LoadGraph("Assets/trump.png")), selectedCard1(-1), selectedCard2(-1), flipTimer(0), count(0)
 {
     counter = 0;
 
+    // ランダムシードの初期化
+    std::srand(static_cast<unsigned int>(std::time(0)));
+
     // カードの初期化
-    for (int n = 1; n <= 13; n++) 
+    for (int n = 1; n <= 13; n++)
     {
-        for (int m = 0; m <= 3; m++) 
+        for (int m = 0; m <= 3; m++)
         { // 4マークだけに変更
             Card c;
             c.num = n;
@@ -34,6 +41,11 @@ void Trump::Initialize()
 
 void Trump::Update()
 {
+    // クールタイムが進行中であれば、それを管理
+    if (flipCooldown > 0)
+    {
+        flipCooldown--;
+    }
 
     // キーが押されたかどうかを管理するフラグ
     static bool isKeyPressedRight = false;
@@ -42,31 +54,31 @@ void Trump::Update()
     static bool isKeyPresseddown = false;
 
     // →キーが押されたとき
-    if (CheckHitKey(KEY_INPUT_RIGHT)) 
+    if (CheckHitKey(KEY_INPUT_RIGHT) && flipCooldown == 0)
     {
-        if (!isKeyPressedRight) 
+        if (!isKeyPressedRight)
         {
             // キーが押されていなかった場合、カードを1つ進める
-            if (selectedCard1 < (int)cards.size()) 
+            if (selectedCard1 < (int)cards.size() - 1)
             {
                 selectedCard1++;
             }
             isKeyPressedRight = true;  // 動きを止める
         }
     }
-    else 
+    else
     {
         // →キーが離されたらフラグを戻す
         isKeyPressedRight = false;
     }
 
     // ←キーが押されたとき
-    if (CheckHitKey(KEY_INPUT_LEFT)) 
+    if (CheckHitKey(KEY_INPUT_LEFT) && flipCooldown == 0)
     {
-        if (!isKeyPressedLeft) 
+        if (!isKeyPressedLeft)
         {
             // キーが押されていなかった場合、カードを1つ戻す
-            if (selectedCard1 < (int)cards.size())
+            if (selectedCard1 > 0)
             {
                 selectedCard1--;
             }
@@ -80,45 +92,45 @@ void Trump::Update()
     }
 
     // ↑キーが押されたとき
-    if (CheckHitKey(KEY_INPUT_UP)) 
+    if (CheckHitKey(KEY_INPUT_UP) && flipCooldown == 0)
     {
-        if (!isKeyPressedup) 
+        if (!isKeyPressedup)
         {
-            // キーが押されていなかった場合、カードを1つ進める
-            if (selectedCard1 < (int)cards.size()) 
+            // キーが押されていなかった場合、カードを1行戻す
+            if (selectedCard1 >= 12)  // 1行以上進んでいる場合
             {
                 selectedCard1 -= 12;
             }
             isKeyPressedup = true;  // フラグを立てる
         }
     }
-    else 
+    else
     {
         // ↑キーが離されたらフラグを戻す
         isKeyPressedup = false;
     }
 
     // ↓キーが押されたとき
-    if (CheckHitKey(KEY_INPUT_DOWN)) 
+    if (CheckHitKey(KEY_INPUT_DOWN) && flipCooldown == 0)
     {
-        if (!isKeyPresseddown) 
+        if (!isKeyPresseddown)
         {
-            // キーが押されていなかった場合、カードを1つ戻す
-            if (selectedCard1 < (int)cards.size())
+            // キーが押されていなかった場合、カードを1行進める
+            if (selectedCard1 < (int)cards.size() - 12)  // 最後の行に達していない場合
             {
                 selectedCard1 += 12;
             }
             isKeyPresseddown = true;  // フラグを立てる
         }
     }
-    else 
+    else
     {
         // ↓キーが離されたらフラグを戻す
         isKeyPresseddown = false;
     }
 
     // 選択されたカードをめくる
-    if (CheckHitKey(KEY_INPUT_RETURN) && selectedCard1 >= 0 && selectedCard1 < (int)cards.size())
+    if (CheckHitKey(KEY_INPUT_RETURN) && selectedCard1 >= 0 && selectedCard1 < (int)cards.size() && flipCooldown == 0)
     {
         if (!cards[selectedCard1].isFaceUp && !cards[selectedCard1].isMatched)
         {
@@ -131,22 +143,23 @@ void Trump::Update()
             else
             {
                 flipTimer = 60; // 一定時間後に裏返す
+                flipCooldown = 60;  // クールタイム開始（カードを裏返すまで新しいカードを選べない）
             }
         }
     }
 
     // マッチ判定
-    if (flipTimer > 0) 
+    if (flipTimer > 0)
     {
         flipTimer--;
-        if (flipTimer == 0) 
+        if (flipTimer == 0)
         {
-            if (cards[selectedCard1].num == cards[selectedCard2].num )//&&
+            if (cards[selectedCard1].num == cards[selectedCard2].num)//&&
             {// cards[selectedCard1].mark == cards[selectedCard2].mark) {
                 cards[selectedCard1].isMatched = true;
                 cards[selectedCard2].isMatched = true;
             }
-            else 
+            else
             {
                 cards[selectedCard1].isFaceUp = false;
                 cards[selectedCard2].isFaceUp = false;
@@ -156,6 +169,8 @@ void Trump::Update()
         }
     }
 }
+
+
 
 void Trump::Draw()
 {
